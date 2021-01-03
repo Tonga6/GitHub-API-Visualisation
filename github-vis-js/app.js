@@ -25,12 +25,15 @@ function gitHubAccess(username) {
     const getRepos = new XMLHttpRequest();
 
     // GitHub endpoints
-    const repos_url = `https://api.github.com/users/${username}/repos`;
     const user_url = `https://api.github.com/users/${username}`;
+    const repos_url = `https://api.github.com/users/${username}/repos`;
+    //const commits_url = `https://api.github.com/repos/${owner}/${repo}/commits`;
 
     // Open connections using GET request via URL endpoint
     getUser.open('GET', user_url, true);
     getRepos.open('GET', repos_url, true);
+
+
     // Process response
     getUser.onload = function () {
         const data = JSON.parse(this.response);
@@ -54,14 +57,16 @@ function gitHubAccess(username) {
         ul.appendChild(li);
     }
     
+
     getRepos.onload = function () {
 
         // Parse API data into JSON
         const data = JSON.parse(this.response);
-
+        //console.log(data);
         // Loop over each object in data array
         for (let i in data) {
 
+            RepoAccess(username, data[i].name);
             // Get the ul with id of of userRepos
             let ul = document.getElementById('userRepos');
 
@@ -71,6 +76,11 @@ function gitHubAccess(username) {
             // Add Bootstrap list item class to each li
             li.classList.add('list-group-item')
 
+            //const contributors = data[i].contributors;
+            //console.log("test" + JSON.stringify(contributors));
+
+            //const committers = JSON.parse(data[i].commits)
+            //console.log(data[i].commits);
             // Create the html markup for each li
             li.innerHTML = (`
                 <p><strong>Repo:</strong> ${data[i].name}</p>
@@ -88,4 +98,25 @@ function gitHubAccess(username) {
     // Send the request to the server
     getUser.send();
     getRepos.send();
+
+
+    function RepoAccess(username, repo){
+        //console.log(repo);
+        // Create XMLHttpRequest objects
+        const getRepoInfo = new XMLHttpRequest();
+
+        // GitHub endpoints
+        const repoInfo_url = `https://api.github.com/repos/${username}/${repo}/languages`;
+
+        // Open connections using GET request via URL endpoint
+        getRepoInfo.open('GET', repoInfo_url, true);
+
+        // Process response
+        getRepoInfo.onload = function () {
+            const data = JSON.parse(this.response);
+            console.log(data);
+        }
+
+        getRepoInfo.send();
+    }
 }
