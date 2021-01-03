@@ -1,6 +1,9 @@
 // Get the GitHub username input form
 const gitHubForm = document.getElementById('gitHubForm');
 
+const header = {
+    "Authorization" : `token b3d11d600bed5c888dbc1b65e3303f2d9baecd8b`
+}
 // Listen for submissions on GitHub username input form
 gitHubForm.addEventListener('submit', (e) => {
 
@@ -13,12 +16,12 @@ gitHubForm.addEventListener('submit', (e) => {
     let gitHubUsername = usernameInput.value;
 
     //test search function
-    gitHubAccess(gitHubUsername);
+    gitHubAccess(gitHubUsername,header);
 
 })
 
 
-function gitHubAccess(username) {
+function gitHubAccess(username,header) {
 
     // Create XMLHttpRequest objects
     const getUser = new XMLHttpRequest();
@@ -45,6 +48,10 @@ function gitHubAccess(username) {
         // Add Bootstrap list item class to each li
         li.classList.add('list-group-item')
 
+        let d;
+        d = new Date(data.created_at);
+        d.getMonth();
+        console.log(d.getMonth());
         // Create the html markup for each li
         li.innerHTML = (`
                 <p><strong>Name:</strong> ${data.name}</p>
@@ -66,7 +73,7 @@ function gitHubAccess(username) {
         // Loop over each object in data array
         for (let i in data) {
 
-            RepoAccess(username, data[i].name);
+            RepoAccess(username, data[i].name, header);
             // Get the ul with id of of userRepos
             let ul = document.getElementById('userRepos');
 
@@ -100,13 +107,13 @@ function gitHubAccess(username) {
     getRepos.send();
 
 
-    function RepoAccess(username, repo){
+    function RepoAccess(username, repo, header){
         //console.log(repo);
         // Create XMLHttpRequest objects
         const getRepoInfo = new XMLHttpRequest();
 
         // GitHub endpoints
-        const repoInfo_url = `https://api.github.com/repos/${username}/${repo}/languages`;
+        const repoInfo_url = `https://api.github.com/repos/${username}/${repo}/commits`;
 
         // Open connections using GET request via URL endpoint
         getRepoInfo.open('GET', repoInfo_url, true);
