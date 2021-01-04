@@ -204,6 +204,9 @@ function gitHubAccess(username,header) {
                 }
             });
             // Append each li to the ul
+            li.appendChild(canvas1);
+            li.appendChild(canvas2);
+            li.appendChild(canvas3);
             ul.appendChild(li);
         }
 
