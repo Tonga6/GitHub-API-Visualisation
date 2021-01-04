@@ -1,9 +1,8 @@
 // Get the GitHub username input form
 const gitHubForm = document.getElementById('gitHubForm');
+const user = "Username";
+const pass = "Password";
 
-const header = {
-    "Authorization" : `token b3d11d600bed5c888dbc1b65e3303f2d9baecd8b`
-}
 // Listen for submissions on GitHub username input form
 gitHubForm.addEventListener('submit', (e) => {
 
@@ -16,26 +15,29 @@ gitHubForm.addEventListener('submit', (e) => {
     let gitHubUsername = usernameInput.value;
 
     //test search function
-    gitHubAccess(gitHubUsername,header);
+    gitHubAccess(gitHubUsername);
 
 })
 
 
-function gitHubAccess(username,header) {
+function gitHubAccess(username) {
 
     // Create XMLHttpRequest objects
     const getUser = new XMLHttpRequest();
     const getRepos = new XMLHttpRequest();
-    const getRepoCommits = new XMLHttpRequest();
 
     // GitHub endpoints
     const user_url = `https://api.github.com/users/${username}`;
     const repos_url = `https://api.github.com/users/${username}/repos`;
-    //const commits_url = `https://api.github.com/repos/${owner}/${repo}/commits`;
+    //const Languages_url = `https://api.github.com/repos/${owner}/${repo}/Languages`;
 
     // Open connections using GET request via URL endpoint
     getUser.open('GET', user_url, true);
     getRepos.open('GET', repos_url, true);
+
+
+    getUser.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+    getRepos.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
 
 
     // Process response
@@ -79,7 +81,7 @@ function gitHubAccess(username,header) {
             canv.id = i;
             document.body.appendChild(canv); // adds the canvas to the body element
 
-            RepoAccess(username, data[i].name, header);
+            RepoAccess(username, data[i].name);
             // Get the ul with id of of userRepos
             let ul = document.getElementById('userRepos');
 
@@ -134,80 +136,7 @@ function gitHubAccess(username,header) {
                     }
                 }
             });
-            // var ctx = document.getElementById('canvas2').getContext('2d');
-            // var myChart = new Chart(ctx, {
-            //     type: 'bar',
-            //     data: {
-            //         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            //         datasets: [{
-            //             label: '# of Votes',
-            //             data: [12, 19, 3, 5, 2, 3],
-            //             backgroundColor: [
-            //                 'rgba(255, 99, 132, 0.2)',
-            //                 'rgba(54, 162, 235, 0.2)',
-            //                 'rgba(255, 206, 86, 0.2)',
-            //                 'rgba(75, 192, 192, 0.2)',
-            //                 'rgba(153, 102, 255, 0.2)',
-            //                 'rgba(255, 159, 64, 0.2)'
-            //             ],
-            //             borderColor: [
-            //                 'rgba(255, 99, 132, 1)',
-            //                 'rgba(54, 162, 235, 1)',
-            //                 'rgba(255, 206, 86, 1)',
-            //                 'rgba(75, 192, 192, 1)',
-            //                 'rgba(153, 102, 255, 1)',
-            //                 'rgba(255, 159, 64, 1)'
-            //             ],
-            //             borderWidth: 1
-            //         }]
-            //     },
-            //     options: {
-            //         scales: {
-            //             yAxes: [{
-            //                 ticks: {
-            //                     beginAtZero: true
-            //                 }
-            //             }]
-            //         }
-            //     }
-            // });
-            // var ctx = document.getElementById('canvas3').getContext('2d');
-            // var myChart = new Chart(ctx, {
-            //     type: 'bar',
-            //     data: {
-            //         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            //         datasets: [{
-            //             label: '# of Votes',
-            //             data: [12, 19, 3, 5, 2, 3],
-            //             backgroundColor: [
-            //                 'rgba(255, 99, 132, 0.2)',
-            //                 'rgba(54, 162, 235, 0.2)',
-            //                 'rgba(255, 206, 86, 0.2)',
-            //                 'rgba(75, 192, 192, 0.2)',
-            //                 'rgba(153, 102, 255, 0.2)',
-            //                 'rgba(255, 159, 64, 0.2)'
-            //             ],
-            //             borderColor: [
-            //                 'rgba(255, 99, 132, 1)',
-            //                 'rgba(54, 162, 235, 1)',
-            //                 'rgba(255, 206, 86, 1)',
-            //                 'rgba(75, 192, 192, 1)',
-            //                 'rgba(153, 102, 255, 1)',
-            //                 'rgba(255, 159, 64, 1)'
-            //             ],
-            //             borderWidth: 1
-            //         }]
-            //     },
-            //     options: {
-            //         scales: {
-            //             yAxes: [{
-            //                 ticks: {
-            //                     beginAtZero: true
-            //                 }
-            //             }]
-            //         }
-            //     }
-            // });
+
             // Append each li to the ul
             li.appendChild(canv);
             ul.appendChild(li);
@@ -219,21 +148,27 @@ function gitHubAccess(username,header) {
     getRepos.send();
 
 
-    function RepoAccess(username, repo, header){
-        //console.log(repo);
-
+    function RepoAccess(username, repo){
+        console.log("repo received: " + repo); 
+        
+        let getRepoLanguages = new XMLHttpRequest();
         // GitHub endpoints
-        const repoCommits_url = `https://api.github.com/repos/${username}/${repo}/commits`;
-
+        let repoLanguages_url = `https://api.github.com/repos/${username}/${repo}/languages`;
+        console.log(repoLanguages_url);
         // Open connections using GET request via URL endpoint
-        getRepoCommits.open('GET', repoCommits_url, true);
+        getRepoLanguages.open('GET', repoLanguages_url, true);
+
+        getRepoLanguages.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
 
         // Process response
-        getRepoCommits.onload = function () {
+        getRepoLanguages.onload = function () {
+            console.log("entered getRepoLanguages.onload()");
             const data = JSON.parse(this.response);
-            console.log(data);
+            const languages = Object.keys(data);
+            console.log("Languages: " + Object.keys(data));
+            console.log("Bytes: " + Object.values(data));
         }
 
-        getRepoCommits.send();
+        getRepoLanguages.send();
     }
 }
