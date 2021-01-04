@@ -150,6 +150,13 @@ function gitHubAccess(username) {
                         ],
                         borderWidth: 1
                     }]
+                },
+                options: {
+                    title: {
+                        display : true,
+                        fontSize: 18,
+                        text : 'Breakdown of Language Distribution'
+                    }
                 }               
             });
             repo_count++;
