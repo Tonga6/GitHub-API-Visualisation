@@ -31,7 +31,6 @@ function gitHubAccess(username) {
     // GitHub endpoints
     const user_url = `https://api.github.com/users/${username}`;
     const repos_url = `https://api.github.com/users/${username}/repos`;
-    //const Languages_url = `https://api.github.com/repos/${owner}/${repo}/Languages`;
 
     // Open connections using GET request via URL endpoint
     getUser.open('GET', user_url, true);
@@ -61,7 +60,7 @@ function gitHubAccess(username) {
                 <p><strong>Location:</strong> ${data.location}</p>
                 <p><strong>Public Repos:</strong> ${data.public_repos}</p>
                 <p><strong>Member Since:</strong> ${data.created_at}</p>
-            `);
+                `);
 
         // Append each li to the ul
         ul.appendChild(li);
@@ -96,11 +95,9 @@ function gitHubAccess(username) {
 
             // Create the html markup for each li
             li.innerHTML = (`
-                <p><strong>Repo:</strong> ${data[i].name}</p>
+                <p><strong>Repository Name:</strong> ${data[i].name}</p>
                 <p><strong>Description:</strong> ${data[i].description}</p>
-                <p><strong>URL:</strong> <a href="${data[i].html_url}">${data[i].html_url}</a></p>
-                <p><strong>Main Language:</strong> ${data[i].language}</p>
-                
+                <p><strong>URL:</strong> <a href="${data[i].html_url}">${data[i].html_url}</a></p>              
             `);
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -118,17 +115,22 @@ function gitHubAccess(username) {
             // Process response
             getRepoLanguages.onload = function () {
                 
-                const data = JSON.parse(this.response);
-                language_bytes = data;
-                const languages = Object.keys(data);
-
+                let data = JSON.parse(this.response);
+                let total_bytes = 0;
+                for(let i in data){
+                    total_bytes += data[i]
+                }
+                for(let i in data){
+                    console.log(data[i]);
+                    data[i] = Math.round((data[i]/total_bytes) * 100);
+                }
                 var ctx = document.getElementById(repo_count).getContext('2d');
             var myChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'doughnut',
                 data: {
                     labels: Object.keys(data),
                     datasets: [{
-                        label: 'Bytes of Code',
+                        label: 'Percentage of Code',
                         data: Object.values(data),
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
