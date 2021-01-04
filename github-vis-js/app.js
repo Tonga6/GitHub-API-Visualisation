@@ -4,7 +4,8 @@ const user = "Username";
 const pass = "Password";
 
 
-let repo_count = 0; //use to track canvas id
+let global_i = 0; //use to track canvas id
+let global_j = 1;
 // Listen for submissions on GitHub username input form
 gitHubForm.addEventListener('submit', (e) => {
 
@@ -43,7 +44,8 @@ function gitHubAccess(username) {
 
     // Process response
     getUser.onload = function () {
-        repo_count = 0; //reset counter
+        global_i = 0; //reset counter
+        global_j = 1;
         const data = JSON.parse(this.response);
 
         // Get the ul with id of of userInfo
@@ -53,20 +55,20 @@ function gitHubAccess(username) {
         // Add Bootstrap list item class to each li
         li.classList.add('list-group-item')
 
-
+        let date = new Date(data.created_at);
         // Create the html markup for each li
         li.innerHTML = (`
                 <p><strong>Name:</strong> ${data.name}</p>
                 <p><strong>Location:</strong> ${data.location}</p>
                 <p><strong>Public Repos:</strong> ${data.public_repos}</p>
-                <p><strong>Member Since:</strong> ${data.created_at}</p>
+                <p><strong>Member Since:</strong> ${date}</p>
                 `);
 
         // Append each li to the ul
         ul.appendChild(li);
     }
-    
-///////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////////////////
 
     getRepos.onload = function () {
 
@@ -76,12 +78,8 @@ function gitHubAccess(username) {
         // Loop over each object in data array
         for (let i in data) {
 
-            //Create canvas for chart
-            var canv = document.createElement('canvas');
-            canv.id = i;
-            document.body.appendChild(canv); // adds the canvas to the body element
-
-///////////////////////////////////////////////////////////////////////////////////////
+          
+            ///////////////////////////////////////////////////////////////////////////////////////
 
 
             // Get the ul with id of of userRepos
@@ -100,76 +98,137 @@ function gitHubAccess(username) {
                 <p><strong>URL:</strong> <a href="${data[i].html_url}">${data[i].html_url}</a></p>              
             `);
 
-///////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////////////////
 
             let getRepoLanguages = new XMLHttpRequest();
+            let getRepoContributors = new XMLHttpRequest();
             // GitHub endpoints
             let repoLanguages_url = `https://api.github.com/repos/${username}/${data[i].name}/languages`;
+            let repoContributors_url = `https://api.github.com/repos/${username}/${data[i].name}/contributors`;
 
             // Open connections using GET request via URL endpoint
             getRepoLanguages.open('GET', repoLanguages_url, true);
+            getRepoContributors.open('GET', repoContributors_url, true);
 
             getRepoLanguages.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+            getRepoContributors.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
 
-            
+
             // Process response
             getRepoLanguages.onload = function () {
-                
+
+                //Create canvas for chart
+            var canv = document.createElement('canvas');
+            canv.id = global_i;    //each id corresponds to the repo it represents
+            document.body.appendChild(canv); // adds the canvas to the body element
+
+
                 let data = JSON.parse(this.response);
                 let total_bytes = 0;
-                for(let i in data){
+                for (let i in data) {
                     total_bytes += data[i]
                 }
-                for(let i in data){
-                    console.log(data[i]);
-                    data[i] = Math.round((data[i]/total_bytes) * 100);
+                for (let i in data) {
+                    data[i] = Math.round((data[i] / total_bytes) * 100);
                 }
-                var ctx = document.getElementById(repo_count).getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(data),
-                    datasets: [{
-                        label: 'Percentage of Code',
-                        data: Object.values(data),
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    title: {
-                        display : true,
-                        fontSize: 18,
-                        text : 'Breakdown of Language Distribution'
+                var ctx = document.getElementById(global_i).getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(data),
+                        datasets: [{
+                            label: 'Percentage of Code',
+                            data: Object.values(data),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            fontSize: 18,
+                            text: 'Breakdown of Language Distribution'
+                        }
                     }
-                }               
-            });
-            repo_count++;
+                });
+                li.appendChild(canv);
+                ul.appendChild(li);
+                global_i += 2;
             }
-            
+
+            getRepoContributors.onload = function () {
+
+                //Create canvas for chart
+            var canv = document.createElement('canvas');
+            canv.id = global_j;    //each id corresponds to the repo it represents
+            document.body.appendChild(canv); // adds the canvas to the body element
+
+
+                let data = JSON.parse(this.response);
+                console.log(data[0].contributions);
+                var xs = [];
+                var ys = [];
+                for(let i in data){
+                    xs.push(data[i].contributions);
+                    ys.push(data[i].login);
+                }
+                var ctx = document.getElementById(global_j).getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ys,
+                        datasets: [{
+                            label: 'Percentage of Code',
+                            data: xs,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            fontSize: 18,
+                            text: 'Breakdown of Collaborator Contributions'
+                        }
+                    }
+                });
+                li.appendChild(canv);
+                ul.appendChild(li);
+                global_j += 2;
+            }
             getRepoLanguages.send();
+            getRepoContributors.send();
 
-///////////////////////////////////////////////////////////////////////////////////////
-            
-
-            // Append each li to the ul
-            li.appendChild(canv);
-            ul.appendChild(li);
         }
     }
     // Send the request to the server
