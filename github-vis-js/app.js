@@ -1,11 +1,6 @@
 // Get the GitHub username input form
 const gitHubForm = document.getElementById('gitHubForm');
 
-var canv = document.createElement('canvas');
-canv.id = 'canvas4';
-
-document.body.appendChild(canv); // adds the canvas to the body element
-
 const header = {
     "Authorization" : `token b3d11d600bed5c888dbc1b65e3303f2d9baecd8b`
 }
@@ -79,6 +74,11 @@ function gitHubAccess(username,header) {
         // Loop over each object in data array
         for (let i in data) {
 
+            //Create canvas for chart
+            var canv = document.createElement('canvas');
+            canv.id = i;
+            document.body.appendChild(canv); // adds the canvas to the body element
+
             RepoAccess(username, data[i].name, header);
             // Get the ul with id of of userRepos
             let ul = document.getElementById('userRepos');
@@ -97,7 +97,7 @@ function gitHubAccess(username,header) {
                 <p><strong>Main Language:</strong> ${data[i].language}</p>
                 
             `);
-            var ctx = document.getElementById('canvas4').getContext('2d');
+            var ctx = document.getElementById(i).getContext('2d');
             var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -209,7 +209,7 @@ function gitHubAccess(username,header) {
             //     }
             // });
             // Append each li to the ul
-            li.appendChild(canvas4);
+            li.appendChild(canv);
             ul.appendChild(li);
         }
 
