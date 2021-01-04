@@ -16,7 +16,6 @@ gitHubForm.addEventListener('submit', (e) => {
 
     // Get the value of the GitHub username input field
     let gitHubUsername = usernameInput.value;
-
     //test search function
     gitHubAccess(gitHubUsername);
 
@@ -44,8 +43,6 @@ function gitHubAccess(username) {
 
     // Process response
     getUser.onload = function () {
-        global_i = 0; //reset counter
-        global_j = 1;
         const data = JSON.parse(this.response);
 
         // Get the ul with id of of userInfo
