@@ -26,7 +26,7 @@ function gitHubAccess(username,header) {
     // Create XMLHttpRequest objects
     const getUser = new XMLHttpRequest();
     const getRepos = new XMLHttpRequest();
-    const getRepoInfo = new XMLHttpRequest();
+    const getRepoCommits = new XMLHttpRequest();
 
     // GitHub endpoints
     const user_url = `https://api.github.com/users/${username}`;
@@ -90,11 +90,121 @@ function gitHubAccess(username,header) {
                 <p><strong>Description:</strong> ${data[i].description}</p>
                 <p><strong>URL:</strong> <a href="${data[i].html_url}">${data[i].html_url}</a></p>
                 <p><strong>Main Language:</strong> ${data[i].language}</p>
+                
             `);
-
+            var ctx = document.getElementById('canvas1').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [12, 19, 3, 5, 2, 3],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+            var ctx = document.getElementById('canvas2').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [12, 19, 3, 5, 2, 3],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+            var ctx = document.getElementById('canvas3').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [12, 19, 3, 5, 2, 3],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
             // Append each li to the ul
             ul.appendChild(li);
-
         }
 
     }
@@ -107,17 +217,17 @@ function gitHubAccess(username,header) {
         //console.log(repo);
 
         // GitHub endpoints
-        const repoInfo_url = `https://api.github.com/repos/${username}/${repo}/commits`;
+        const repoCommits_url = `https://api.github.com/repos/${username}/${repo}/commits`;
 
         // Open connections using GET request via URL endpoint
-        getRepoInfo.open('GET', repoInfo_url, true);
+        getRepoCommits.open('GET', repoCommits_url, true);
 
         // Process response
-        getRepoInfo.onload = function () {
+        getRepoCommits.onload = function () {
             const data = JSON.parse(this.response);
             console.log(data);
         }
 
-        getRepoInfo.send();
+        getRepoCommits.send();
     }
 }
