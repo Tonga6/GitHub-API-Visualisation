@@ -26,6 +26,7 @@ function gitHubAccess(username,header) {
     // Create XMLHttpRequest objects
     const getUser = new XMLHttpRequest();
     const getRepos = new XMLHttpRequest();
+    const getRepoInfo = new XMLHttpRequest();
 
     // GitHub endpoints
     const user_url = `https://api.github.com/users/${username}`;
@@ -83,11 +84,6 @@ function gitHubAccess(username,header) {
             // Add Bootstrap list item class to each li
             li.classList.add('list-group-item')
 
-            //const contributors = data[i].contributors;
-            //console.log("test" + JSON.stringify(contributors));
-
-            //const committers = JSON.parse(data[i].commits)
-            //console.log(data[i].commits);
             // Create the html markup for each li
             li.innerHTML = (`
                 <p><strong>Repo:</strong> ${data[i].name}</p>
@@ -109,8 +105,6 @@ function gitHubAccess(username,header) {
 
     function RepoAccess(username, repo, header){
         //console.log(repo);
-        // Create XMLHttpRequest objects
-        const getRepoInfo = new XMLHttpRequest();
 
         // GitHub endpoints
         const repoInfo_url = `https://api.github.com/repos/${username}/${repo}/commits`;
