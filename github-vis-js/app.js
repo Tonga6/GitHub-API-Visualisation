@@ -3,6 +3,8 @@ const gitHubForm = document.getElementById('gitHubForm');
 const user = "Username";
 const pass = "Password";
 
+
+let repo_count = 0; //use to track canvas id
 // Listen for submissions on GitHub username input form
 gitHubForm.addEventListener('submit', (e) => {
 
@@ -42,6 +44,7 @@ function gitHubAccess(username) {
 
     // Process response
     getUser.onload = function () {
+        repo_count = 0; //reset counter
         const data = JSON.parse(this.response);
 
         // Get the ul with id of of userInfo
@@ -51,10 +54,7 @@ function gitHubAccess(username) {
         // Add Bootstrap list item class to each li
         li.classList.add('list-group-item')
 
-        let d;
-        d = new Date(data.created_at);
-        d.getMonth();
-        console.log(d.getMonth());
+
         // Create the html markup for each li
         li.innerHTML = (`
                 <p><strong>Name:</strong> ${data.name}</p>
@@ -67,12 +67,13 @@ function gitHubAccess(username) {
         ul.appendChild(li);
     }
     
+///////////////////////////////////////////////////////////////////////////////////////
 
     getRepos.onload = function () {
 
         // Parse API data into JSON
         const data = JSON.parse(this.response);
-        //console.log(data);
+
         // Loop over each object in data array
         for (let i in data) {
 
@@ -81,7 +82,9 @@ function gitHubAccess(username) {
             canv.id = i;
             document.body.appendChild(canv); // adds the canvas to the body element
 
-            RepoAccess(username, data[i].name);
+///////////////////////////////////////////////////////////////////////////////////////
+
+
             // Get the ul with id of of userRepos
             let ul = document.getElementById('userRepos');
 
@@ -99,14 +102,34 @@ function gitHubAccess(username) {
                 <p><strong>Main Language:</strong> ${data[i].language}</p>
                 
             `);
-            var ctx = document.getElementById(i).getContext('2d');
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+            let getRepoLanguages = new XMLHttpRequest();
+            // GitHub endpoints
+            let repoLanguages_url = `https://api.github.com/repos/${username}/${data[i].name}/languages`;
+
+            // Open connections using GET request via URL endpoint
+            getRepoLanguages.open('GET', repoLanguages_url, true);
+
+            getRepoLanguages.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+
+            
+            // Process response
+            getRepoLanguages.onload = function () {
+                
+                const data = JSON.parse(this.response);
+                language_bytes = data;
+                const languages = Object.keys(data);
+
+                var ctx = document.getElementById(repo_count).getContext('2d');
             var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    labels: Object.keys(data),
                     datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
+                        label: 'Bytes of Code',
+                        data: Object.values(data),
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
                             'rgba(54, 162, 235, 0.2)',
@@ -125,50 +148,23 @@ function gitHubAccess(username) {
                         ],
                         borderWidth: 1
                     }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
+                }               
             });
+            repo_count++;
+            }
+            
+            getRepoLanguages.send();
+
+///////////////////////////////////////////////////////////////////////////////////////
+            
 
             // Append each li to the ul
             li.appendChild(canv);
             ul.appendChild(li);
         }
-
     }
     // Send the request to the server
     getUser.send();
     getRepos.send();
 
-
-    function RepoAccess(username, repo){
-        console.log("repo received: " + repo); 
-        
-        let getRepoLanguages = new XMLHttpRequest();
-        // GitHub endpoints
-        let repoLanguages_url = `https://api.github.com/repos/${username}/${repo}/languages`;
-        console.log(repoLanguages_url);
-        // Open connections using GET request via URL endpoint
-        getRepoLanguages.open('GET', repoLanguages_url, true);
-
-        getRepoLanguages.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
-
-        // Process response
-        getRepoLanguages.onload = function () {
-            console.log("entered getRepoLanguages.onload()");
-            const data = JSON.parse(this.response);
-            const languages = Object.keys(data);
-            console.log("Languages: " + Object.keys(data));
-            console.log("Bytes: " + Object.values(data));
-        }
-
-        getRepoLanguages.send();
-    }
 }
