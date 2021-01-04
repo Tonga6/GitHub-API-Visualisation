@@ -137,7 +137,6 @@ function gitHubAccess(username) {
                     data: {
                         labels: Object.keys(data),
                         datasets: [{
-                            label: 'Percentage of Code',
                             data: Object.values(data),
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
@@ -162,7 +161,7 @@ function gitHubAccess(username) {
                         title: {
                             display: true,
                             fontSize: 18,
-                            text: 'Breakdown of Language Distribution'
+                            text: 'Percentage Breakdown of Language Distribution'
                         }
                     }
                 });
@@ -180,7 +179,6 @@ function gitHubAccess(username) {
 
 
                 let data = JSON.parse(this.response);
-                console.log(data[0].contributions);
                 var xs = [];
                 var ys = [];
                 for(let i in data){
@@ -193,7 +191,6 @@ function gitHubAccess(username) {
                     data: {
                         labels: ys,
                         datasets: [{
-                            label: 'Percentage of Code',
                             data: xs,
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
@@ -218,8 +215,8 @@ function gitHubAccess(username) {
                         title: {
                             display: true,
                             fontSize: 18,
-                            text: 'Breakdown of Collaborator Contributions'
-                        }
+                            text: 'Breakdown of Collaborators & Contributions'
+                        }                       
                     }
                 });
                 li.appendChild(canv);
