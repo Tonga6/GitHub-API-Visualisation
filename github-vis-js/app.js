@@ -75,7 +75,7 @@ function gitHubAccess(username) {
         // Loop over each object in data array
         for (let i in data) {
 
-          
+
             ///////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -99,25 +99,30 @@ function gitHubAccess(username) {
 
             let getRepoLanguages = new XMLHttpRequest();
             let getRepoContributors = new XMLHttpRequest();
+            let getRepoCommits = new XMLHttpRequest();
+
             // GitHub endpoints
             let repoLanguages_url = `https://api.github.com/repos/${username}/${data[i].name}/languages`;
             let repoContributors_url = `https://api.github.com/repos/${username}/${data[i].name}/contributors`;
+            let repoCommits_url = `https://api.github.com/repos/${username}/${data[i].name}/stats/participation`;
 
             // Open connections using GET request via URL endpoint
             getRepoLanguages.open('GET', repoLanguages_url, true);
             getRepoContributors.open('GET', repoContributors_url, true);
+            getRepoCommits.open('GET', repoContributors_url, true);
 
             getRepoLanguages.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
             getRepoContributors.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+            getRepoCommits.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
 
 
             // Process response
             getRepoLanguages.onload = function () {
 
                 //Create canvas for chart
-            var canv = document.createElement('canvas');
-            canv.id = global_i;    //each id corresponds to the repo it represents
-            document.body.appendChild(canv); // adds the canvas to the body element
+                var canv = document.createElement('canvas');
+                canv.id = global_i;    //each id corresponds to the repo it represents
+                document.body.appendChild(canv); // adds the canvas to the body element
 
 
                 let data = JSON.parse(this.response);
@@ -170,15 +175,15 @@ function gitHubAccess(username) {
             getRepoContributors.onload = function () {
 
                 //Create canvas for chart
-            var canv = document.createElement('canvas');
-            canv.id = global_j;    //each id corresponds to the repo it represents
-            document.body.appendChild(canv); // adds the canvas to the body element
+                var canv = document.createElement('canvas');
+                canv.id = global_j;    //each id corresponds to the repo it represents
+                document.body.appendChild(canv); // adds the canvas to the body element
 
 
                 let data = JSON.parse(this.response);
                 var xs = [];
                 var ys = [];
-                for(let i in data){
+                for (let i in data) {
                     xs.push(data[i].contributions);
                     ys.push(data[i].login);
                 }
@@ -213,17 +218,25 @@ function gitHubAccess(username) {
                             display: true,
                             fontSize: 18,
                             text: 'Breakdown of Collaborators & Contributions'
-                        }                       
+                        }
                     }
                 });
                 li.appendChild(canv);
                 ul.appendChild(li);
                 global_j += 2;
             }
+            getRepoCommits.onload = function () {
+                let data = JSON.parse(this.response);
+                console.log("owner commits per week: " + Object.values(data[0]));
+            }
+
             getRepoLanguages.send();
             getRepoContributors.send();
+            getRepoCommits.send();
 
         }
+
+
     }
     // Send the request to the server
     getUser.send();
