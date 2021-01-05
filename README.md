@@ -15,12 +15,25 @@ After submitting a valid GitHub username into the search field, two categories o
 ### User Information
 
 #### Text-Based
+
 - Name
 - Location
 - Number of Public Repos
- - Date of Account Creation
+- Date of Account Creation
+
+|![User Info](/Images/repo.png)|
+|:--:|
+|User information retrieved from the API|
+
 
 ### Repo Information
+
+The following is provided for every one of the user's public repository: 
+
+|![Repo Info](/Images/User.png)|
+|:--:|
+|Repo information retrieved from the API|
+
 
 #### Text-Based
 - Name
@@ -28,8 +41,15 @@ After submitting a valid GitHub username into the search field, two categories o
 - URL
 
 #### Visual
-- Percentage Breakdown of Language Distribution
-- Breakdown of Collaborators and Contributions
+
+|![Language Chart](/Images/Lang.png)|
+|:--:|
+|Percentage Breakdown of Language Distribution|
+
+
+|![Collab Chart](/Images/Collab.png)|
+|:--:|
+|Breakdown of Collaborators and Contributions|
 
 
 I chose language ratios and collaborator distribution as what I would visualise from the GitHub API because I think it provides an insight on the user's programming preferences and experiences.
