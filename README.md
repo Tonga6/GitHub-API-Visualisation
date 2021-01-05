@@ -5,6 +5,11 @@ Open index.html with any modern web browser while index.html and app.js are in t
 
 
 ## About
+|![Before Search](/Images/Home.png)|
+|:--:|
+|Homepage before a search is made|
+
+
 After submitting a valid GitHub username into the search field, two categories of information will be retrieved from GitHub's API:
 
 ### User Information
