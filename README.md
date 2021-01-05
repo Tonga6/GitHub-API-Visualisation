@@ -1,21 +1,31 @@
 # GitHub-API-Visualisation
 
-    How to Access:
+## How to Access
 Open index.html with any modern web browser while index.html and app.js are in the same directory.
 
 
-    About:
+## About
 After submitting a valid GitHub username into the search field, the information which is returned can be grouped into two categories:
 
-    User Info
-    This includes the user's name, location, number of public repos, and the creation date of their account.
+### User Information
 
-    Repo Info
-        Text-Based
-        Name
-        Description
-        URL
+#### Text-Based
+- Name
+- Location
+- Number of Public Repos
+ - Date of Account Creation
 
-        Visual
-        Percentage Breakdown of Language Distribution
-        Breakdown of Collaborators and Contributions
+### Repo Information
+
+#### Text-Based
+- Name
+- Description
+- URL
+
+#### Visual
+- Percentage Breakdown of Language Distribution
+- Breakdown of Collaborators and Contributions
+
+
+I chose language ratios and collaborator distribution as what I would visualise from the GitHub API because I think it provides an insight on the user's programming preferences and experiences.
+Language breakdown of each repository reveals both a user's diversity and expertise in given languages, while visualising the collaborators associated with each repository and how each has contributed provides an insight into what sort of work environments a user is exposed to. For example, if the user has experience working with large teams or by themselves.
