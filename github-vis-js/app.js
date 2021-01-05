@@ -1,8 +1,9 @@
 // Get the GitHub username input form
 const gitHubForm = document.getElementById('gitHubForm');
+
+//Use for Authentication
 const user = "Username";
 const pass = "Password";
-
 
 let global_i = 0; //use to track canvas id
 let global_j = 1;
@@ -36,7 +37,6 @@ function gitHubAccess(username) {
     getUser.open('GET', user_url, true);
     getRepos.open('GET', repos_url, true);
 
-
     getUser.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
     getRepos.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
 
@@ -65,7 +65,7 @@ function gitHubAccess(username) {
         ul.appendChild(li);
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
     getRepos.onload = function () {
 
@@ -74,10 +74,6 @@ function gitHubAccess(username) {
 
         // Loop over each object in data array
         for (let i in data) {
-
-
-            ///////////////////////////////////////////////////////////////////////////////////////
-
 
             // Get the ul with id of of userRepos
             let ul = document.getElementById('userRepos');
@@ -95,26 +91,21 @@ function gitHubAccess(username) {
                 <p><strong>URL:</strong> <a href="${data[i].html_url}">${data[i].html_url}</a></p>              
             `);
 
-            ///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
             let getRepoLanguages = new XMLHttpRequest();
             let getRepoContributors = new XMLHttpRequest();
-            let getRepoCommits = new XMLHttpRequest();
 
             // GitHub endpoints
             let repoLanguages_url = `https://api.github.com/repos/${username}/${data[i].name}/languages`;
             let repoContributors_url = `https://api.github.com/repos/${username}/${data[i].name}/contributors`;
-            let repoCommits_url = `https://api.github.com/repos/${username}/${data[i].name}/stats/participation`;
 
             // Open connections using GET request via URL endpoint
             getRepoLanguages.open('GET', repoLanguages_url, true);
             getRepoContributors.open('GET', repoContributors_url, true);
-            getRepoCommits.open('GET', repoContributors_url, true);
 
             getRepoLanguages.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
             getRepoContributors.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
-            getRepoCommits.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
-
 
             // Process response
             getRepoLanguages.onload = function () {
@@ -133,6 +124,8 @@ function gitHubAccess(username) {
                 for (let i in data) {
                     data[i] = Math.round((data[i] / total_bytes) * 100);
                 }
+
+                //draw chart
                 var ctx = document.getElementById(global_i).getContext('2d');
                 var myChart = new Chart(ctx, {
                     type: 'doughnut',
@@ -179,7 +172,6 @@ function gitHubAccess(username) {
                 canv.id = global_j;    //each id corresponds to the repo it represents
                 document.body.appendChild(canv); // adds the canvas to the body element
 
-
                 let data = JSON.parse(this.response);
                 var xs = [];
                 var ys = [];
@@ -187,6 +179,7 @@ function gitHubAccess(username) {
                     xs.push(data[i].contributions);
                     ys.push(data[i].login);
                 }
+                //draw chart
                 var ctx = document.getElementById(global_j).getContext('2d');
                 var myChart = new Chart(ctx, {
                     type: 'pie',
@@ -225,21 +218,11 @@ function gitHubAccess(username) {
                 ul.appendChild(li);
                 global_j += 2;
             }
-            getRepoCommits.onload = function () {
-                let data = JSON.parse(this.response);
-                //console.log("owner commits per week: " + Object.values(data[0]));
-            }
-
             getRepoLanguages.send();
             getRepoContributors.send();
-            getRepoCommits.send();
-
         }
-
-
     }
     // Send the request to the server
     getUser.send();
     getRepos.send();
-
 }
