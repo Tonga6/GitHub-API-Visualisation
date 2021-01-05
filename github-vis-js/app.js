@@ -227,7 +227,7 @@ function gitHubAccess(username) {
             }
             getRepoCommits.onload = function () {
                 let data = JSON.parse(this.response);
-                console.log("owner commits per week: " + Object.values(data[0]));
+                //console.log("owner commits per week: " + Object.values(data[0]));
             }
 
             getRepoLanguages.send();
